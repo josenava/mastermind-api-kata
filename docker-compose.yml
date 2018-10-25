@@ -1,0 +1,28 @@
+version: '3'
+services:
+  web:
+    container_name: mastermind-app
+    build:
+      context: .
+      args:
+        UID: $U_ID
+    ports:
+    - "8000:8000"
+    volumes:
+    - .:/appdata/www/mastermind-app
+    depends_on:
+    - db
+    links:
+    - db
+  db:
+    container_name: mastermind-app-db
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: roothey13
+    ports:
+    - "3306:3306"
+    volumes:
+    - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
