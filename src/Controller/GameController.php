@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Command\Game\CreateCommand;
 use App\UseCase\Game\CreateUseCase;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,7 @@ class GameController extends Controller
             $maxAttempts = $request->request->getInt('max_attempts');
             $combination = $request->request->get('combination');
 
-            $command = new CreateCommand($gameName, $maxAttempts, $combination);
+            $command = new CreateCommand(Uuid::uuid4(), $gameName, $maxAttempts, $combination);
 
             return $this->json($this->createUseCase->execute($command));
         } catch (\Exception $exception) {

@@ -9,6 +9,8 @@ use Ramsey\Uuid\Uuid;
 
 class Game implements \JsonSerializable
 {
+    private const DEFAULT_MAX_ATTEMPTS = 10;
+
     /**
      * @var string
      */
@@ -50,7 +52,7 @@ class Game implements \JsonSerializable
         $this->id = $id;
         $this->uuid = $uuid;
         $this->name = $name;
-        $this->maxAttempts = $maxAttempts;
+        $this->maxAttempts = $maxAttempts ?? self::DEFAULT_MAX_ATTEMPTS;
         $this->combination = $combination;
         $this->createdAt = $createdAt;
         $this->guessAttempts = [];
@@ -142,5 +144,13 @@ class Game implements \JsonSerializable
     public function uuid(): Uuid
     {
         return $this->uuid;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
     }
 }

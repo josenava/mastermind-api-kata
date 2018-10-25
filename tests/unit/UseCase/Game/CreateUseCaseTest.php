@@ -12,13 +12,13 @@ use Ramsey\Uuid\Uuid;
 
 class CreateUseCaseTest extends TestCase
 {
-    public function testCreateUseCase()
+    public function testCreateUseCase(): void
     {
         $command = new CreateCommand(Uuid::uuid4(), 'Hey', 20, 'RED,YELLOW,BLUE,BLUE');
         $game = Game::fromCommand($command);
 
         $gameRepositoryProphecy = $this->prophesize(GameRepository::class);
-        $gameRepositoryProphecy->save($game)->willReturn($game);
+        $gameRepositoryProphecy->save($game)->willReturn(true);
         $gameRepository = $gameRepositoryProphecy->reveal();
 
         $useCase = new CreateUseCase($gameRepository);

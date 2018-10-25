@@ -14,6 +14,7 @@ final class Version20181025141909 extends AbstractMigration
 CREATE TABLE game
 (
   id MEDIUMINT UNSIGNED NOT NULL PRIMARY KEY,
+  uuid CHAR(36) NOT NULL,
   name VARCHAR(40),
   max_guess_attempts TINYINT UNSIGNED NOT NULL,
   combination VARCHAR(50) NOT NULL,
@@ -28,6 +29,7 @@ CREATE TABLE guess_attempt
 (
   id MEDIUMINT UNSIGNED NOT NULL PRIMARY KEY,
   game_id MEDIUMINT UNSIGNED NOT NULL,
+  uuid CHAR(36) NOT NULL,
   player_guess VARCHAR(50) COMMENT 'Player combination attempt',
   feedback VARCHAR(50),
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
