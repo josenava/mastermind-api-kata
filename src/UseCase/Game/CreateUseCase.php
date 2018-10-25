@@ -22,6 +22,10 @@ class CreateUseCase
 
     public function execute(CreateCommand $command): Game
     {
+        $game = Game::fromCommand($command);
 
+        $this->gameRepository->save($game);
+
+        return $game;
     }
 }

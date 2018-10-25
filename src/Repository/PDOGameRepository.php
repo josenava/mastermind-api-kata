@@ -14,7 +14,7 @@ class PDOGameRepository implements GameRepository
         // TODO: Implement findById() method.
     }
 
-    public function save(Game $game): bool
+    public function save(Game $game): Game
     {
         // TODO: Implement save() method.
     }

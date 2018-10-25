@@ -9,5 +9,5 @@ use App\Entity\Game;
 interface GameRepository
 {
     public function findById(int $id): Game;
-    public function save(Game $game): bool;
+    public function save(Game $game): Game;
 }
