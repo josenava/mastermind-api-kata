@@ -5,6 +5,8 @@ namespace App\UseCase\Game;
 
 
 use App\Command\Game\CreateCommand;
+use App\Entity\Game;
+use App\Repository\GameRepository;
 
 class CreateUseCase
 {
@@ -18,7 +20,7 @@ class CreateUseCase
         $this->gameRepository = $gameRepository;
     }
 
-    public function execute(CreateCommand $command): array
+    public function execute(CreateCommand $command): Game
     {
 
     }
