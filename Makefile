@@ -5,8 +5,8 @@ U_ID=$(shell id -u)
 dev:
 	U_ID=${U_ID} docker-compose up -d
 ssh-be:
-	docker exec -it --user "${U_ID}" spotahome-app bash
+	docker exec -it --user "${U_ID}" mastermind-app bash
 ssh-db:
-	docker exec -it spotahome-app-db bash
+	docker exec -it mastermind-app-db bash
 create-db:
-	docker exec -it spotahome-app-db mysql -p -e "CREATE DATABASE spotahome_test"
+	docker exec -it mastermind-app-db mysql -p -e "CREATE DATABASE mastermind"
