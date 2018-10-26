@@ -6,7 +6,9 @@ namespace App\Entity;
 
 use App\Command\Game\CreateCommand;
 use App\ValueObject\ColorCombination;
+use App\ValueObject\Feedback;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class Game implements \JsonSerializable
 {
@@ -32,18 +34,19 @@ class Game implements \JsonSerializable
      * @var array
      */
     private $guessAttempts;
+
     /**
      * @var int|null
      */
     private $id;
     /**
-     * @var Uuid
+     * @var UuidInterface
      */
     private $uuid;
 
     private function __construct(
         ?int $id,
-        Uuid $uuid,
+        UuidInterface $uuid,
         string $name,
         ?int $maxAttempts,
         ColorCombination $combination,
@@ -62,18 +65,26 @@ class Game implements \JsonSerializable
     public static function fromArray(array $gameData): self
     {
         return new self(
-            $gameData['id'],
-            $gameData['uuid'],
+            (int) $gameData['id'],
+            Uuid::fromString($gameData['uuid']),
             $gameData['name'],
-            $gameData['max_attempts'],
-            $gameData['combination'],
-            $gameData['created_at']
+            (int) $gameData['max_guess_attempts'],
+            ColorCombination::fromCombination($gameData['combination']),
+            $gameData['created_at'] ? new \DateTimeImmutable($gameData['created_at']) : null
         );
     }
 
     public static function fromCommand(CreateCommand $command): self
     {
         return new self(null, $command->uuid(), $command->name(), $command->maxAttempts(), $command->combination());
+    }
+
+    public function giveFeedback(GuessAttempt $guessAttempt): GuessAttempt
+    {
+        $feedback = Feedback::create($this->combination, $guessAttempt->playerAttempt());
+        $guessAttempt->setFeedback($feedback);
+
+        return $guessAttempt;
     }
 
     /**
@@ -115,7 +126,13 @@ class Game implements \JsonSerializable
             'uuid' => $this->uuid()->toString(),
             'name' => $this->name,
             'max_attempts' => $this->maxAttempts,
+            'guess_attempts' => $this->guessAttempts
         ];
+    }
+
+    public function allowAttempt(): bool
+    {
+        return count($this->guessAttempts) < $this->maxAttempts;
     }
 
     public function equalsTo(Game $game): bool
@@ -140,9 +157,9 @@ class Game implements \JsonSerializable
     }
 
     /**
-     * @return Uuid
+     * @return UuidInterface
      */
-    public function uuid(): Uuid
+    public function uuid(): UuidInterface
     {
         return $this->uuid;
     }
@@ -153,5 +170,18 @@ class Game implements \JsonSerializable
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @param array $guessAttempts
+     */
+    public function setGuessAttempts(array $guessAttempts): void
+    {
+        $this->guessAttempts = $guessAttempts;
+    }
+
+    public function addGuessAttempt(GuessAttempt $guessAttempt): void
+    {
+        $this->guessAttempts[] = $guessAttempt;
     }
 }

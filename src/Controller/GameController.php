@@ -5,7 +5,9 @@ namespace App\Controller;
 
 
 use App\Command\Game\CreateCommand;
+use App\Command\GuessAttempt\GuessCommand;
 use App\UseCase\Game\CreateUseCase;
+use App\UseCase\GuessAttempt\GuessUseCase;
 use App\ValueObject\ColorCombination;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -20,10 +22,15 @@ class GameController extends Controller
      * @var CreateUseCase
      */
     private $createUseCase;
+    /**
+     * @var GuessUseCase
+     */
+    private $guessUseCase;
 
-    public function __construct(CreateUseCase $createGameUseCase)
+    public function __construct(CreateUseCase $createGameUseCase, GuessUseCase $guessUseCase)
     {
         $this->createUseCase = $createGameUseCase;
+        $this->guessUseCase = $guessUseCase;
     }
 
     /**
@@ -47,8 +54,22 @@ class GameController extends Controller
         }
     }
 
-    public function guessAction(Request $request): JsonResponse
+    /**
+     * @Route("/api/game/{uuid}/guess_attempt")
+     *
+     * @param string $uuid
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function guessAction(string $uuid, Request $request): JsonResponse
     {
+        try {
+            $guessAttempt = $request->request->get('guess_attempt');
+            $guessCommand = new GuessCommand(Uuid::fromString($uuid), ColorCombination::fromCombination($guessAttempt));
 
+            return $this->json($this->guessUseCase->execute($guessCommand));
+        } catch (\Exception $exception) {
+            return $this->json($exception->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
     }
 }

@@ -5,9 +5,10 @@ namespace App\Repository;
 
 
 use App\Entity\Game;
+use Ramsey\Uuid\UuidInterface;
 
 interface GameRepository
 {
-    public function findById(int $id): Game;
+    public function findByUuid(UuidInterface $uuid): Game;
     public function save(Game $game): bool;
 }

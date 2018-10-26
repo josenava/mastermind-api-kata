@@ -5,7 +5,9 @@ namespace App\Repository;
 
 
 use App\Entity\Game;
+use App\Entity\GuessAttempt;
 use Doctrine\DBAL\Connection;
+use Ramsey\Uuid\UuidInterface;
 
 class PDOGameRepository implements GameRepository
 {
@@ -19,9 +21,33 @@ class PDOGameRepository implements GameRepository
         $this->connection = $connection;
     }
 
-    public function findById(int $id): Game
+    public function findByUuid(UuidInterface $uuid): Game
     {
-        // TODO: Implement findById() method.
+        $selectQuery = <<<SQL
+SELECT id, uuid, name, combination, max_guess_attempts, created_at FROM game
+WHERE uuid = ?
+SQL;
+
+        $gameResult = $this->connection->fetchAssoc($selectQuery, [$uuid->toString()]);
+        $game = Game::fromArray($gameResult);
+
+        $selectGameGuessAttemptsQuery = <<<SQL
+SELECT id, uuid, game_id, player_guess, feedback, created_at FROM guess_attempt
+WHERE game_id = ?
+SQL;
+
+        $guessAttemptsData = $this->connection->fetchAll($selectGameGuessAttemptsQuery, [
+            $game->id()
+        ]);
+
+        $guessAttempts = array_map(function(array $guessAttempt) {
+            return GuessAttempt::fromArray($guessAttempt);
+        }, $guessAttemptsData);
+
+
+        $game->setGuessAttempts($guessAttempts);
+
+        return $game;
     }
 
     public function save(Game $game): bool
