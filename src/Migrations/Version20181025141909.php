@@ -13,7 +13,7 @@ final class Version20181025141909 extends AbstractMigration
         $createGameSql = <<<SQL
 CREATE TABLE game
 (
-  id MEDIUMINT UNSIGNED NOT NULL PRIMARY KEY,
+  id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   uuid CHAR(36) NOT NULL,
   name VARCHAR(40),
   max_guess_attempts TINYINT UNSIGNED NOT NULL,
@@ -27,7 +27,7 @@ SQL;
         $createGuessAttemptSql = <<<SQL
 CREATE TABLE guess_attempt
 (
-  id MEDIUMINT UNSIGNED NOT NULL PRIMARY KEY,
+  id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   game_id MEDIUMINT UNSIGNED NOT NULL,
   uuid CHAR(36) NOT NULL,
   player_guess VARCHAR(50) COMMENT 'Player combination attempt',

@@ -112,9 +112,9 @@ class Game implements \JsonSerializable
     {
         return [
             'id' => $this->id,
+            'uuid' => $this->uuid()->toString(),
             'name' => $this->name,
             'max_attempts' => $this->maxAttempts,
-            'created_at' => $this->createdAt->format('YmdHis')
         ];
     }
 

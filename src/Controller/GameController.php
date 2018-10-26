@@ -11,6 +11,8 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class GameController extends Controller
 {
@@ -24,6 +26,12 @@ class GameController extends Controller
         $this->createUseCase = $createGameUseCase;
     }
 
+    /**
+     * @Route("/api/game", methods={"POST"})
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function createAction(Request $request): JsonResponse
     {
         try {
@@ -35,7 +43,12 @@ class GameController extends Controller
 
             return $this->json($this->createUseCase->execute($command));
         } catch (\Exception $exception) {
-            return $this->json($exception->getMessage());
+            return $this->json($exception->getMessage(), Response::HTTP_BAD_REQUEST);
         }
+    }
+
+    public function guessAction(Request $request): JsonResponse
+    {
+
     }
 }
