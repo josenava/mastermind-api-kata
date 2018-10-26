@@ -10,7 +10,7 @@ use App\UseCase\Game\CreateUseCase;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-class CreateUseCaseTest extends TestCase
+final class CreateUseCaseTest extends TestCase
 {
     public function testCreateUseCase(): void
     {
