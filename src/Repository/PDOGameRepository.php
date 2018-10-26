@@ -35,10 +35,10 @@ SQL;
             $game->uuid()->toString(),
             $game->name(),
             $game->maxAttempts(),
-            $game->combination()
+            $game->combination()->toString()
         ]);
 
-        $gameId = $this->connection->lastInsertId();
+        $gameId = (int) $this->connection->lastInsertId();
         $game->setId($gameId);
 
         return true;

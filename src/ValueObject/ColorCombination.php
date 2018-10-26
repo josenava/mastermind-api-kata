@@ -49,15 +49,26 @@ final class ColorCombination
             throw new InvalidLengthColorCombination(sprintf('Please enter a combination of %d colors', self::MAX_ELEMENTS));
         }
 
-        if (count(array_diff($colorCombination, self::VALID_COLORS))) {
+        if (count(array_intersect($colorCombination, self::VALID_COLORS)) !== count($colorCombination)) {
             throw new InvalidColorCombination(self::VALID_COLORS);
         }
 
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function combination(): array
     {
         return $this->combination;
+    }
+
+    /**
+     * @return string
+     */
+    public function toString(): string
+    {
+        return implode(',', $this->combination);
     }
 }

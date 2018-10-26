@@ -7,6 +7,7 @@ use App\Command\Game\CreateCommand;
 use App\Entity\Game;
 use App\Repository\GameRepository;
 use App\UseCase\Game\CreateUseCase;
+use App\ValueObject\ColorCombination;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -14,7 +15,8 @@ final class CreateUseCaseTest extends TestCase
 {
     public function testCreateUseCase(): void
     {
-        $command = new CreateCommand(Uuid::uuid4(), 'Hey', 20, 'RED,YELLOW,BLUE,BLUE');
+        $combination = ColorCombination::fromCombination('RED,YELLOW,BLUE,BLUE');
+        $command = new CreateCommand(Uuid::uuid4(), 'Hey', 20, $combination);
         $game = Game::fromCommand($command);
 
         $gameRepositoryProphecy = $this->prophesize(GameRepository::class);

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Command\Game;
 
 
+use App\ValueObject\ColorCombination;
 use Ramsey\Uuid\Uuid;
 
 final class CreateCommand
@@ -17,7 +18,7 @@ final class CreateCommand
      */
     private $maxAttempts;
     /**
-     * @var string
+     * @var ColorCombination
      */
     private $combination;
     /**
@@ -29,9 +30,9 @@ final class CreateCommand
      * @param Uuid $uuid
      * @param string $name
      * @param int|null $maxAttempts
-     * @param string $combination
+     * @param ColorCombination $combination
      */
-    public function __construct(Uuid $uuid, string $name, ?int $maxAttempts, string $combination)
+    public function __construct(Uuid $uuid, string $name, ?int $maxAttempts, ColorCombination $combination)
     {
         $this->uuid = $uuid;
         $this->name = $name;
@@ -56,9 +57,9 @@ final class CreateCommand
     }
 
     /**
-     * @return string
+     * @return ColorCombination
      */
-    public function combination(): string
+    public function combination(): ColorCombination
     {
         return $this->combination;
     }

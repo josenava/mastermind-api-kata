@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Command\Game\CreateCommand;
 use App\UseCase\Game\CreateUseCase;
+use App\ValueObject\ColorCombination;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,7 +29,7 @@ class GameController extends Controller
         try {
             $gameName = $request->request->get('name');
             $maxAttempts = $request->request->getInt('max_attempts');
-            $combination = $request->request->get('combination');
+            $combination = ColorCombination::fromCombination($request->request->get('combination'));
 
             $command = new CreateCommand(Uuid::uuid4(), $gameName, $maxAttempts, $combination);
 

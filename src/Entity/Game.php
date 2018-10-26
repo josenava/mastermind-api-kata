@@ -5,6 +5,7 @@ namespace App\Entity;
 
 
 use App\Command\Game\CreateCommand;
+use App\ValueObject\ColorCombination;
 use Ramsey\Uuid\Uuid;
 
 class Game implements \JsonSerializable
@@ -20,7 +21,7 @@ class Game implements \JsonSerializable
      */
     private $maxAttempts;
     /**
-     * @var string
+     * @var ColorCombination
      */
     private $combination;
     /**
@@ -45,7 +46,7 @@ class Game implements \JsonSerializable
         Uuid $uuid,
         string $name,
         ?int $maxAttempts,
-        string $combination,
+        ColorCombination $combination,
         ?\DateTimeImmutable $createdAt = null
     )
     {
@@ -92,9 +93,9 @@ class Game implements \JsonSerializable
     }
 
     /**
-     * @return string
+     * @return ColorCombination
      */
-    public function combination(): string
+    public function combination(): ColorCombination
     {
         return $this->combination;
     }

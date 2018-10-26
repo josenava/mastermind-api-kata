@@ -28,9 +28,4 @@ class CreateUseCase
 
         return $game;
     }
-
-    private function validateCombination()
-    {
-        
-    }
 }
