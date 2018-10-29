@@ -22,6 +22,11 @@ class PDOGuessAttemptRepository implements GuessAttemptRepository
         $this->connection = $connection;
     }
 
+    /**
+     * @param GuessAttempt $guessAttempt
+     * @return GuessAttempt
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function save(GuessAttempt $guessAttempt): GuessAttempt
     {
         $insertQuery = <<<SQL

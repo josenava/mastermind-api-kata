@@ -43,14 +43,33 @@ class Game implements \JsonSerializable
      * @var UuidInterface
      */
     private $uuid;
+    /**
+     * @var bool
+     */
+    private $finished;
+    /**
+     * @var \DateTimeImmutable|null
+     */
+    private $updatedAt;
 
+
+    /**
+     * @param int|null $id
+     * @param UuidInterface $uuid
+     * @param string $name
+     * @param int|null $maxAttempts
+     * @param ColorCombination $combination
+     * @param \DateTimeImmutable|null $createdAt
+     * @param \DateTimeImmutable|null $updatedAt
+     */
     private function __construct(
         ?int $id,
         UuidInterface $uuid,
         string $name,
         ?int $maxAttempts,
         ColorCombination $combination,
-        ?\DateTimeImmutable $createdAt = null
+        ?\DateTimeImmutable $createdAt = null,
+        ?\DateTimeImmutable $updatedAt = null
     )
     {
         $this->id = $id;
@@ -59,7 +78,9 @@ class Game implements \JsonSerializable
         $this->maxAttempts = $maxAttempts ?? self::DEFAULT_MAX_ATTEMPTS;
         $this->combination = $combination;
         $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
         $this->guessAttempts = [];
+        $this->finished = false;
     }
 
     public static function fromArray(array $gameData): self
@@ -70,7 +91,8 @@ class Game implements \JsonSerializable
             $gameData['name'],
             (int) $gameData['max_guess_attempts'],
             ColorCombination::fromCombination($gameData['combination']),
-            $gameData['created_at'] ? new \DateTimeImmutable($gameData['created_at']) : null
+            $gameData['created_at'] ? new \DateTimeImmutable($gameData['created_at']) : null,
+            $gameData['updated_at'] ? new \DateTimeImmutable($gameData['updated_at']) : null
         );
     }
 
@@ -126,7 +148,8 @@ class Game implements \JsonSerializable
             'uuid' => $this->uuid()->toString(),
             'name' => $this->name,
             'max_attempts' => $this->maxAttempts,
-            'guess_attempts' => $this->guessAttempts
+            'guess_attempts' => $this->guessAttempts,
+            'finished' => $this->finished
         ];
     }
 
@@ -183,5 +206,24 @@ class Game implements \JsonSerializable
     public function addGuessAttempt(GuessAttempt $guessAttempt): void
     {
         $this->guessAttempts[] = $guessAttempt;
+        if ($guessAttempt->isWinner() || count($this->guessAttempts) === $this->maxAttempts) {
+            $this->finished = true;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function finished(): bool
+    {
+        return $this->finished;
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function updatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
     }
 }

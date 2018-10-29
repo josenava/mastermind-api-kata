@@ -57,8 +57,8 @@ class GuessAttempt implements \JsonSerializable
     public static function fromArray(array $guessAttemptData): self
     {
         return new self(
-            $guessAttemptData['id'],
-            $guessAttemptData['game_id'],
+            (int) $guessAttemptData['id'],
+            (int) $guessAttemptData['game_id'],
             Uuid::fromString($guessAttemptData['uuid']),
             ColorCombination::fromCombination($guessAttemptData['player_guess']),
             Feedback::fromString($guessAttemptData['feedback'])
@@ -67,7 +67,7 @@ class GuessAttempt implements \JsonSerializable
 
     public static function fromCommand(GuessCommand $command): self
     {
-        return new self(null, null, $command->uuid(), $command->colorCombination());
+        return new self(null, null, $command->gameUuid(), $command->colorCombination());
     }
 
     /**
@@ -143,5 +143,13 @@ class GuessAttempt implements \JsonSerializable
     public function setGameId(int $gameId): void
     {
         $this->gameId = $gameId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWinner(): bool
+    {
+        return $this->feedback()->isWinner();
     }
 }

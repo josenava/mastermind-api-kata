@@ -12,24 +12,24 @@ final class GuessCommand
     /**
      * @var UuidInterface
      */
-    private $uuid;
+    private $gameUuid;
     /**
      * @var ColorCombination
      */
     private $colorCombination;
 
-    public function __construct(UuidInterface $uuid, ColorCombination $colorCombination)
+    public function __construct(UuidInterface $gameUuid, ColorCombination $colorCombination)
     {
-        $this->uuid = $uuid;
+        $this->gameUuid = $gameUuid;
         $this->colorCombination = $colorCombination;
     }
 
     /**
      * @return UuidInterface
      */
-    public function uuid(): UuidInterface
+    public function gameUuid(): UuidInterface
     {
-        return $this->uuid;
+        return $this->gameUuid;
     }
 
     /**
@@ -39,5 +39,4 @@ final class GuessCommand
     {
         return $this->colorCombination;
     }
-
 }

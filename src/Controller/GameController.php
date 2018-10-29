@@ -5,8 +5,11 @@ namespace App\Controller;
 
 
 use App\Command\Game\CreateCommand;
+use App\Command\Game\GameInfoCommand;
 use App\Command\GuessAttempt\GuessCommand;
+use App\Exception\GameNotFound;
 use App\UseCase\Game\CreateUseCase;
+use App\UseCase\Game\GameInfoUseCase;
 use App\UseCase\GuessAttempt\GuessUseCase;
 use App\ValueObject\ColorCombination;
 use Ramsey\Uuid\Uuid;
@@ -26,11 +29,20 @@ class GameController extends Controller
      * @var GuessUseCase
      */
     private $guessUseCase;
+    /**
+     * @var GameInfoUseCase
+     */
+    private $gameInfoUseCase;
 
-    public function __construct(CreateUseCase $createGameUseCase, GuessUseCase $guessUseCase)
+    public function __construct(
+        CreateUseCase $createGameUseCase,
+        GuessUseCase $guessUseCase,
+        GameInfoUseCase $gameInfoUseCase
+    )
     {
         $this->createUseCase = $createGameUseCase;
         $this->guessUseCase = $guessUseCase;
+        $this->gameInfoUseCase = $gameInfoUseCase;
     }
 
     /**
@@ -51,6 +63,26 @@ class GameController extends Controller
             return $this->json($this->createUseCase->execute($command));
         } catch (\Exception $exception) {
             return $this->json($exception->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * @Route("/api/game/{uuid}", methods={"GET"})
+     *
+     * Game contains all the guess_attempts + the winner combination
+     *
+     * @param string $uuid
+     * @return JsonResponse
+     */
+    public function gameHistoricAction(string $uuid): JsonResponse
+    {
+        try {
+            $gameInfoCommand = new GameInfoCommand(Uuid::fromString($uuid));
+            $game = $this->gameInfoUseCase->execute($gameInfoCommand);
+
+            return $this->json($game);
+        } catch (GameNotFound $gameNotFound) {
+            return $this->json($gameNotFound->getMessage(), Response::HTTP_NOT_FOUND);
         }
     }
 
